@@ -1,0 +1,41 @@
+.contain{
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    color:white;
+}
+.subtable{
+    width: 50%;
+    height: 100%;
+    background-color: black;
+    color:white;
+}
+.half{
+    width:50%;
+}
+.body{
+    display: flex;
+    justify-content: space-between;
+    width: 100vw;
+    height: 85%;
+    overflow: auto;
+}
+.header,.end{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100vw;
+    height: 10%;
+}
+.underline-1{
+    border-bottom: 1px #ececec solid;
+}
+.underline-2{
+    border-bottom: 0.25px #ececec solid;
+}
+.secondary-font{
+    color:grey;
+}
+.primary-font{
+    color:white;
+}
