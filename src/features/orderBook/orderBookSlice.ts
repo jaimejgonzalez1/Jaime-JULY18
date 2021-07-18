@@ -33,16 +33,20 @@ export const orderbookSlice = createSlice({
       const curr = current(state)
       const data:incomingOrder = JSON.parse(record.payload.data);
       if(curr.open){
-        if (data.feed === "book_ui_1_snapshot") {
-          const max = data.asks
+        if (data.feed=== "book_ui_1_snapshot") {
+          const maxPrice = data.asks
             .concat(data.bids)
             .filter((d) => d[1])
             .map((d) => d[1])
             .reduce((acc, curr) => acc + curr, 0);
-          state.size = max;
+          state.size = maxPrice;
+          const decimal = compute.getDecimal(state.currentTicker)
+          const date = new Date().getTime()
+          const mappedBids = compute.mapIncomingToObject(data.bids,date,decimal)
+          const mappedAsks = compute.mapIncomingToObject(data.asks,date,decimal)
           state.feedName = Array.isArray(data.product_id) ?  data.product_id[0] : data.product_id
-          state.bids = compute.groupRows(state.currentTicker, compute.mapIncomingToObject(data.bids,new Date().getTime(),compute.getDecimal(state.currentTicker))) 
-          state.asks = compute.groupRows(state.currentTicker, compute.mapIncomingToObject(data.asks,new Date().getTime(),compute.getDecimal(state.currentTicker)))
+          state.bids = compute.groupRows(state.currentTicker, mappedBids ) 
+          state.asks = compute.groupRows(state.currentTicker, mappedAsks)
           state.lastTime = new Date().getTime()
           const spread = compute.calcSpread(state.asks,state.bids)
           state.spread = spread.value
@@ -50,7 +54,7 @@ export const orderbookSlice = createSlice({
           state.tickerSizes = tickerOptions[Array.isArray(data.product_id) ?  data.product_id[0] : data.product_id].tickSizes
           state.currentTicker = state.tickerSizes[0]
   
-        }else if(data.feed === "book_ui_1"){
+        }else if(data.feed=== "book_ui_1"){
           const update = compute.update(data,curr)
           if(update){
             state.asks = update.asks
